@@ -1,0 +1,3 @@
+[submodule "kornia-pil"]
+	path = kornia-pil
+	url = https://github.com/kaiwenzha/kornia-pil.git

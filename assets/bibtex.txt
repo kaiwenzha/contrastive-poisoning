@@ -1,0 +1,7 @@
+@inproceedings{he2023indiscriminate,
+    title={Indiscriminate Poisoning Attacks on Unsupervised Contrastive Learning},
+    author={Hao He and Kaiwen Zha and Dina Katabi},
+    booktitle={The Eleventh International Conference on Learning Representations},
+    year={2023},
+    url={https://openreview.net/forum?id=f0a_dWEYg-Td}
+}
