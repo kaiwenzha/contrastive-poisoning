@@ -2,7 +2,7 @@
 
 [Project Page](https://contrastive-poisoning.csail.mit.edu/) | [Paper](https://arxiv.org/abs/2202.11202) | [BibTex](assets/bibtex.txt)
 
-This repo contains the official PyTorch implementation of [Indiscriminate Poisoning Attacks on Unsupervised Contrastive Learning](https://arxiv.org/abs/2202.11202) (ICLR 2023 Spotlight, Notable-top-25%), by [Hao He](http://people.csail.mit.edu/hehaodele/)\*, [Kaiwen Zha](https://kaiwenzha.github.io/)\*, [Dina Katabi](http://people.csail.mit.edu/dina/) (*co-primary authors).
+This repo contains the official PyTorch implementation of [Indiscriminate Poisoning Attacks on Unsupervised Contrastive Learning](https://arxiv.org/abs/2202.11202) (ICLR 2023 Spotlight), by [Hao He](http://people.csail.mit.edu/hehaodele/)\*, [Kaiwen Zha](https://kaiwenzha.github.io/)\*, [Dina Katabi](http://people.csail.mit.edu/dina/) (*co-primary authors).
 
 <img src='assets/teaser.gif'>
 
