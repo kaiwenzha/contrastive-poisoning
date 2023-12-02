@@ -13,7 +13,9 @@ import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 
 from model import AttackModel
-from datasets import I_CIFAR10, I_CIFAR100, P_CIFAR10_TwoCropTransform, P_CIFAR100_TwoCropTransform, DatasetPoisoning
+from datasets import (I_CIFAR10, I_CIFAR100, P_CIFAR10_TwoCropTransform,
+                      P_CIFAR10_TwoCropTransform_SAS_Subset,
+                      P_CIFAR100_TwoCropTransform, DatasetPoisoning)
 from util import TwoCropTransform, AverageMeter, save_model, set_seed
 from util import set_model_backbone_grad, convert_classwise_to_samplewise
 from util import adjust_learning_rate, warmup_learning_rate, reduce_mean, GatherLayer, concat_all_gather
@@ -129,6 +131,8 @@ def parse_option():
     parser.add_argument('--allow_mmt_grad', action='store_true', default=False,
                         help='allow gradients to flow through the momentum encoder to update delta (for MoCov2 and BYOL)')
 
+    parser.add_argument('--sas_subset_indices', type=str)
+    
     # DDP-related arguments
     parser.add_argument('--local_rank', default=-1, type=int,
                         help='node rank for distributed training')
@@ -204,7 +208,7 @@ def parse_option():
                          f"_delta_wt_{opt.delta_weight:.4f}" \
                          f"_ep_{opt.epochs}" \
                          f"_seed_{opt.seed}" \
-                         f"_eval"
+                         f"_eval_{abs(hash(opt.sas_subset_indices))}"
     elif opt.baseline:
         opt.model_name = f"{opt.model_name}"
     else:
@@ -303,9 +307,14 @@ def set_loader(opt, model):
         ]
 
         if opt.dataset == 'cifar10':
-            train_dataset = P_CIFAR10_TwoCropTransform(root=opt.data_folder,
+            train_dataset = P_CIFAR10_TwoCropTransform_SAS_Subset(root=opt.data_folder,
                                                        transform=train_transform,
-                                                       download=True)
+                                                       download=True,
+                                                       subset_indices=opt.sas_subset_indices)
+
+            # train_dataset = P_CIFAR10_TwoCropTransform(root=opt.data_folder,
+            #                                            transform=train_transform,
+            #                                            download=True)
         elif opt.dataset == 'cifar100':
             train_dataset = P_CIFAR100_TwoCropTransform(root=opt.data_folder,
                                                         transform=train_transform,
@@ -393,7 +402,8 @@ def set_model(opt):
             param.requires_grad = False
 
     model = model.cuda(opt.local_rank)
-    model = DDP(model, device_ids=[opt.local_rank], output_device=opt.local_rank, find_unused_parameters=True)
+    # model = DDP(model, device_ids=[opt.local_rank], output_device=opt.local_rank, find_unused_parameters=True)
+    model = DDP(model, device_ids=[opt.local_rank], output_device=opt.local_rank)
 
     criterion = criterion.cuda(opt.local_rank)
     cudnn.benchmark = True
